@@ -74,5 +74,5 @@ opensearch@baidu.com
 
 
 ## 联系我们
-邮箱: opensearch@baidu.com  
+邮箱: opensearch@baidu.com  
 QQ群: 188471131
