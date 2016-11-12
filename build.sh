@@ -1,4 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -x
+set -o pipefail
+export PS4='+{$LINENO `date "+%Y-%m-%d_%H:%M:%S"` :${FUNCNAME[0]}}    '
+cur=`dirname "${0}"`
+cd "${cur}"
+cur=`pwd`
 
 set -e -u -E # this script will exit if any sub-command fails
 
@@ -39,6 +45,7 @@ if [ ! -f "${FLAG_DIR}/protobuf_2_6_1" ] \
     || [ ! -f "${DEPS_PREFIX}/lib/libprotobuf.a" ] \
     || [ ! -d "${DEPS_PREFIX}/include/google/protobuf" ]; then
     cd protobuf-2.6.1
+    autoreconf -ivf
     ./configure ${DEPS_CONFIG}
     make -j4
     make install
@@ -65,6 +72,7 @@ if [ ! -f "${FLAG_DIR}/snappy_1_1_1" ] \
     || [ ! -f "${DEPS_PREFIX}/lib/libsnappy.a" ] \
     || [ ! -f "${DEPS_PREFIX}/include/snappy.h" ]; then
     cd snappy-1.1.1
+    autoreconf -ivf
     ./configure ${DEPS_CONFIG}
     make -j4
     make install
@@ -154,7 +162,7 @@ fi
 if [ ! -f "${FLAG_DIR}/common" ] \
     || [ ! -f "${DEPS_PREFIX}/lib/libcommon.a" ]; then
     rm -rf common
-    git clone https://github.com/baidu/common
+    git clone -b cpp11 https://github.com/baidu/common
     cd common
     sed -i 's/^PREFIX=.*/PREFIX=..\/..\/thirdparty/' config.mk
     sed -i '/^INCLUDE_PATH=*/s/$/ -I..\/..\/thirdparty\/boost_1_57_0/g' Makefile
